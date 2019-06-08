@@ -5,21 +5,20 @@ class Filter(abc.ABC):
     """Use for creating filter classes
 
     Args:
-        `key` (str): the unique filter identification
+        `filter_key` (str): the unique filter identification
 
     Methods:
         `apply`: apply filter for objects
         `apply_dict_params`: the same as `apply` but get filter param from params dict
     """
-    def __init__(self, key: str):
-        self.key = key
+    filter_key = ''
 
     def apply(self, objects, param):
         return self._execute(objects, param)
 
     def apply_dict_params(self, objects, params: dict):
-        if self.key in params:
-            objects = self._execute(objects, params[self.key])
+        if self.filter_key in params:
+            objects = self._execute(objects, params[self.filter_key])
         return objects
 
     @abc.abstractmethod
@@ -40,13 +39,9 @@ class QuerySetFilter(Filter):
         UserEmailFilter = QuerySetFilter('user_is_active', 'user_is_active')
         users = UserEmailFilter.apply(users, 'True')
         ```
-
     """
-    __slots__ = ('key', 'lookup')
-
-    def __init__(self, key: str, lookup: str):
-        super().__init__(key)
-        self.lookup = lookup
+    filter_key = ''
+    lookup = ''
 
     def _execute(self, queryset, param):
         return queryset.filter(**{self.lookup: param})
