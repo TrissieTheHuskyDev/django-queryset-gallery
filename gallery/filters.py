@@ -24,6 +24,7 @@ class Filter(abc.ABC):
 
     @abc.abstractmethod
     def _execute(self, objects, param):
+        """Execute filter to objects and return objects"""
         return objects
 
 
