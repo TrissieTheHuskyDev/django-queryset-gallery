@@ -6,17 +6,19 @@ class Gallery(object):
 
     Args:
         `paginator` (Paginator): paginator that will be use
-        `filters` (list): includes Filter object that can be use
+        `filters` (list): includes Filter objects (!not classes) that can be use
 
     Methods:
         `get_page`: apply filters and get necessary page
     """
     paginator = Paginator
-    filters = []
+
+    def __init__(self, filters):
+        self.filters = filters
 
     def _apply_filters(self, objects, params_filter):
         for f in self.filters:
-            objects = f.apply_dict_params(objects, params_filter)
+            objects = f.apply_from_dict_params(objects, params_filter)
         return objects
 
     def get_page(self, objects, filter_params, page_number, per_page):
