@@ -25,3 +25,27 @@ class Filter(abc.ABC):
     @abc.abstractmethod
     def _execute(self, objects, param):
         return objects
+
+
+class QuerySetFilter(Filter):
+    """Base on lookup queryset filtering
+
+    Args:
+        `key` (str): the same as in Filter
+        `lookup` (str): lookup for filtering. Example "user__email"
+
+    Usage:
+        ```
+        UserEmailFilter = QuerySetFilter('user_is_active', 'user_is_active')
+        users = UserEmailFilter.apply(users, 'True')
+        ```
+
+    """
+    __slots__ = ('key', 'lookup')
+
+    def __init__(self, key: str, lookup: str):
+        super().__init__(key)
+        self.lookup = lookup
+
+    def _execute(self, queryset, param):
+        return queryset.filter(**{self.lookup: param})
