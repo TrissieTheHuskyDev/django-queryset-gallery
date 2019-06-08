@@ -24,3 +24,7 @@ class Gallery(object):
         paginator = self.paginator(objects, per_page)
         objects, pagination_data = paginator.get_page(number=page_number)
         return objects, pagination_data
+
+
+class QuerySetGallery(Gallery):
+    paginator = QuerySetPaginator
