@@ -68,3 +68,23 @@ class Paginator(object):
             pagination_data['errors'] = 'Page data is invalid'
 
         return objects, pagination_data
+
+
+class QuerySetPaginator(Paginator):
+    """Good for queryset pagination because of slicing
+
+    Args:
+        `queryset` (queryset): queryset that must be paginated
+        `per_page` (int): the same as for Paginator
+
+    Usage:
+        ```
+        paginator = PaginationQuerySet(queryset, 10)
+        queryset, pagination_data = paginator.get_page(2)
+        ```
+    """
+    def __init__(self, queryset, per_page=100):
+        super().__init__(queryset.distinct(), per_page)
+
+    def _get_objects_length(self):
+        return self.objects.count()
