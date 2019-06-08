@@ -13,7 +13,7 @@ class Paginator(object):
 
     Usage:
         ```
-        >>> from gallery.paginator import Paginator
+        >>> from queryset_gallery.paginator import Paginator
         >>> p = Paginator([i for i in range(1, 6)], 2)
         >>> p.get_page(3)
         ([5], {'objects_count': 5, 'page_number': 3, 'page_count': 3, 'per_page': 2})

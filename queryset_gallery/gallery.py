@@ -1,4 +1,4 @@
-from gallery.paginator import Paginator, QuerySetPaginator
+from queryset_gallery.paginator import Paginator, QuerySetPaginator
 
 
 class Gallery(object):
