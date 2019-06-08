@@ -20,6 +20,7 @@ An introduction and TODO sections are required. The other aren't.
 
 The Template. Just copy and paste it like a code from stackoverflow.com
 
+```
 **Introduction**
 
 **Problems**
@@ -29,3 +30,4 @@ The Template. Just copy and paste it like a code from stackoverflow.com
 **Notes**
 
 **TODO**
+```
