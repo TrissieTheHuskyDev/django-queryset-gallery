@@ -51,7 +51,7 @@ gallery.get_page(per_page=10, page_number=1, filter_params=params)
 
 ### How to work with pagination
 
-The pagination has two nuances. If you want to get all objects you can set `per_page` as -1. This way pagination returns all objects. If `per_page` and `neceeery_page` are invalid it returns empty queryset and adds to pagination data dict key `error`.
+The `Paginator` class has two nuances. If you want to get all objects you can set `per_page` as -1. This way pagination returns all objects. If `per_page` and `necessary_page` are invalid it returns empty queryset and adds to pagination data dict key `errors`. You don't need to work with Paginator, because the `QuerySetGallery` class works with it. The gallery raise error 404 if there are invalid page data.
 
 Example of the pagination data:
 
@@ -61,6 +61,5 @@ data =  {
     'page_number': 2,
     'page_count': 1,
     'per_page': 100,
-    'errors': 'Page data is invalid'
 }
 ```
