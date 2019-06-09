@@ -1,3 +1,5 @@
+from django.shortcuts import Http404
+
 from queryset_gallery.paginator import Paginator, QuerySetPaginator
 
 
@@ -19,10 +21,17 @@ class Gallery(object):
             objects = f.apply_from_dict_params(objects=objects, params=params_filter)
         return objects
 
-    def get_page(self, objects, filter_params, page_number, per_page):
+    def _not_found(self):
+        pass
+
+    def get_page(self, objects, page_number, per_page, filter_params: dict=None):
+        filter_params = filter_params or dict()
         objects = self._apply_filters(objects, filter_params)
         paginator = self.paginator(objects, per_page)
-        return paginator.get_page(page_number)
+
+        objects, pagination_data = paginator.get_page(page_number)
+        pagination_data.get('errors') and self._not_found()
+        return objects, pagination_data
 
 
 class QuerySetGallery(Gallery):
@@ -32,7 +41,14 @@ class QuerySetGallery(Gallery):
     def _get_queryset(self):
         return self.model.objects.all()
 
+    def _not_found(self):
+        raise Http404
+
     def get_page(self, page_number, per_page, filter_params: dict=None, queryset=None):
-        filter_params = filter_params or dict()
         objects = self._get_queryset() if not queryset else queryset
-        return super().get_page(objects, filter_params, page_number, per_page)
+        return super().get_page(
+            page_number=page_number,
+            per_page=per_page,
+            filter_params=filter_params,
+            objects=objects
+        )
