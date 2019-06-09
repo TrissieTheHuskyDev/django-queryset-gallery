@@ -12,9 +12,7 @@ class Gallery(object):
         `get_page`: apply filters and get necessary page
     """
     paginator = Paginator
-
-    def __init__(self, filters):
-        self.filters = filters
+    filters = []
 
     def _apply_filters(self, objects, params_filter):
         for f in self.filters:
@@ -30,3 +28,12 @@ class Gallery(object):
 
 class QuerySetGallery(Gallery):
     paginator = QuerySetPaginator
+    model = None
+
+    def _get_queryset(self):
+        return self.model.objects.all()
+
+    def get_page(self, page_number, per_page, filter_params: dict=None, queryset=None):
+        filter_params = filter_params or dict()
+        objects = self._get_queryset() if not queryset else queryset
+        return super().get_page(objects, filter_params, page_number, per_page)
