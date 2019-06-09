@@ -16,14 +16,13 @@ class Gallery(object):
 
     def _apply_filters(self, objects, params_filter):
         for f in self.filters:
-            objects = f.apply_from_dict_params(objects, params_filter)
+            objects = f.apply_from_dict_params(objects=objects, params=params_filter)
         return objects
 
     def get_page(self, objects, filter_params, page_number, per_page):
         objects = self._apply_filters(objects, filter_params)
         paginator = self.paginator(objects, per_page)
-        objects, pagination_data = paginator.get_page(number=page_number)
-        return objects, pagination_data
+        return paginator.get_page(page_number)
 
 
 class QuerySetGallery(Gallery):

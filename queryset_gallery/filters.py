@@ -12,7 +12,7 @@ class Filter(abc.ABC):
         `apply_from_dict_params`: the same as `apply` but get filter param from params dict
     """
     def __init__(self, key):
-        self.key = ''
+        self.key = key
 
     def apply(self, objects, param):
         return self._execute(objects, param)
@@ -24,7 +24,6 @@ class Filter(abc.ABC):
 
     @abc.abstractmethod
     def _execute(self, objects, param):
-        """Execute filter to objects and return objects"""
         return objects
 
 
