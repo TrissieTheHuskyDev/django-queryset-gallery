@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="django-queryset-gallery",
-    version="0.1.1",
+    version="1.0.0",
     author="Eugene Mozge",
     author_email="eumozge@gmail.com",
     description="Queryset gallery is an interface for creating a gallery that provides pagination and filtering via lookups. It can be useful for getting objects via API.",
