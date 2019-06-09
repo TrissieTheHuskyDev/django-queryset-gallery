@@ -1,7 +1,14 @@
+v1.0.0
+
+* #5 Implement a possibility to raise not found error 
+* Add tests
+
 v0.1.1
 
-* Implement working with models
+* #4 Implement working with models
 
-v0.1
+v0.1.0
 
-* Implemented basic functionality as pagination, creating filters and creating galleries
+* #3 Implement a gallery functionality
+* #2 Implement a queryset filtering
+* #1 Implement a pagination for queryset
