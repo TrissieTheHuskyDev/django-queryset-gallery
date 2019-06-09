@@ -13,9 +13,9 @@ class Paginator(object):
 
     Usage:
         ```
-        >>> from queryset_gallery.paginator import Paginator
-        >>> p = Paginator([i for i in range(1, 6)], 2)
-        >>> p.get_page(3)
+        from queryset_gallery.paginator import Paginator
+        p = Paginator([i for i in range(1, 6)], 2)
+        p.get_page(3)
         ([5], {'objects_count': 5, 'page_number': 3, 'page_count': 3, 'per_page': 2})
         ```
 
@@ -33,36 +33,41 @@ class Paginator(object):
         return len(self.objects)
 
     def _slice_objects(self, start, end):
-        return self.objects[start: end]
+        return self.objects[start:end]
 
     def _get_empty_page(self):
         """Use for cases then there is invalid input data"""
         return self._slice_objects(0, 0)
 
-    def _get_objects_for_page(self, number):
+    def _get_objects_for_page(self, page_number):
         """Slice objects with calculated indexes"""
-        start, end = self._calculate_index(number, self.per_page)
+        start, end = self._calculate_index(page_number, self.per_page, self.objects_count)
         return self._slice_objects(start, end)
 
-    def _is_page_valid(self, necessary_page):
-        return self.per_page > 1 and 0 < necessary_page <= self.page_count
+    @staticmethod
+    def _is_page_valid(necessary_page, per_page, page_count, objects_count):
+        if per_page < 1 or necessary_page < 1:
+            return False
+        if objects_count > 0 and necessary_page > page_count:
+            return False
+        return True
 
     @staticmethod
-    def _calculate_index(page_number, per_page):
-        start = (page_number - 1) * per_page if page_number > 1 else 0
-        end = start + per_page
+    def _calculate_index(necessary_page, per_page, objects_count):
+        start = (necessary_page - 1) * per_page if necessary_page > 1 else 0
+        end = start + per_page if start + per_page <= objects_count else objects_count
         return start, end
 
-    def get_page(self, number):
+    def get_page(self, page_number):
         pagination_data = {
             'objects_count': self.objects_count,
-            'page_number': number,
+            'page_number': page_number,
             'page_count': self.page_count,
             'per_page': self.per_page,
         }
 
-        if self._is_page_valid(number):
-            objects = self._get_objects_for_page(number)
+        if self._is_page_valid(page_number, self.per_page, self.page_count, self.objects_count):
+            objects = self._get_objects_for_page(page_number)
         else:
             objects = self._get_empty_page()
             pagination_data['errors'] = 'Page data is invalid'
