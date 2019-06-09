@@ -70,7 +70,7 @@ class Paginator(object):
             objects = self._get_objects_for_page(page_number)
         else:
             objects = self._get_empty_page()
-            pagination_data['errors'] = 'Page not found'
+            pagination_data['errors'] = True
 
         return objects, pagination_data
 
