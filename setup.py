@@ -5,10 +5,11 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="django-queryset-gallery",
-    version="0.1",
+    version="0.1.1",
     author="Eugene Mozge",
     author_email="eumozge@gmail.com",
-    description="The gallery for queryset that supports interface for filtering",
+    description="Queryset gallery is an interface for creating a gallery that provides pagination and filtering via lookups. It can be useful for getting objects via API.",
+    long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/eumozge/django-queryset-gallery",
     packages=setuptools.find_packages(),
