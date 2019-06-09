@@ -12,7 +12,7 @@ def get_pagination_data(objects_count, page_number, page_count, per_page, errors
         'page_count': page_count,
         'objects_count': objects_count,
     }
-    not errors or p.update({'errors': 'Page data is invalid'})
+    not errors or p.update({'errors': 'Page not found'})
     return p
 
 

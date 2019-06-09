@@ -60,17 +60,17 @@ class Paginator(object):
 
     def get_page(self, page_number):
         pagination_data = {
-            'objects_count': self.objects_count,
             'page_number': page_number,
-            'page_count': self.page_count,
             'per_page': self.per_page,
+            'objects_count': self.objects_count,
+            'page_count': self.page_count,
         }
 
         if self._is_page_valid(page_number, self.per_page, self.page_count, self.objects_count):
             objects = self._get_objects_for_page(page_number)
         else:
             objects = self._get_empty_page()
-            pagination_data['errors'] = 'Page data is invalid'
+            pagination_data['errors'] = 'Page not found'
 
         return objects, pagination_data
 
