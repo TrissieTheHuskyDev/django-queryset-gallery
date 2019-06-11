@@ -1,3 +1,7 @@
+v1.0.1
+
+* #6 Implement ordering for queryset gallery
+
 v1.0.0
 
 * #5 Implement a possibility to raise not found error 
