@@ -1,8 +1,9 @@
 import unittest
 
-from queryset_gallery.filters import Filter
-from queryset_gallery.gallery import Gallery
+from queryset_gallery.filters import Filter, QuerySetFilter
+from queryset_gallery.gallery import Gallery, QuerySetGallery
 from queryset_gallery.paginator import Paginator
+from django_mock_queries.query import MockSet, MockModel
 
 
 def get_pagination_data(objects_count, page_number, page_count, per_page, errors=False):
@@ -14,6 +15,19 @@ def get_pagination_data(objects_count, page_number, page_count, per_page, errors
     }
     not errors or p.update({'errors': True})
     return p
+
+
+def get_users():
+    users = MockSet()
+    params = (
+        (2, 'Gandalf', 'Maia'),
+        (3, 'Gimli', 'Dwarf'),
+        (4, 'Frodo', 'Hobbit'),
+        (1, 'Smeagol', 'Hobbit')
+    )
+    for p in params:
+        users.add(MockModel(id=p[0], name=p[1], race=p[2]))
+    return users
 
 
 class TestPaginator(unittest.TestCase):
@@ -74,23 +88,25 @@ class TestGallery(unittest.TestCase):
             def _execute(self, objects, param):
                 return [i for i in objects if i != param]
 
-        self.filter = RemoveNumberFilter(key='remove')
-
         class RemoveNumberGallery(Gallery):
-            filters = [self.filter]
+            filters = [RemoveNumberFilter(key='remove')]
 
         self.gallery = RemoveNumberGallery()
 
     def test_apply_filters(self):
-        self.assertEqual(self.filter.apply(objects=[1, 2, 3], param=3), [1, 2])
         self.assertEqual(
-            self.filter.apply_from_dict_params(
-                objects=[1, 3, 3], params={'remove': 3}
+            self.gallery._apply_filters(
+                objects=[1, 2, 3], params_filter={'remove': 3}
+            ), [1, 2]
+        )
+        self.assertEqual(
+            self.gallery._apply_filters(
+                objects=[1, 3, 3], params_filter={'remove': 3}
             ), [1]
         )
         self.assertEqual(
-            self.filter.apply_from_dict_params(
-                objects=[1, 3, 3], params={'number': 3}
+            self.gallery._apply_filters(
+                objects=[1, 3, 3], params_filter={'number': 3}
             ), [1, 3, 3]
         )
 
@@ -105,6 +121,26 @@ class TestGallery(unittest.TestCase):
                 objects=[1, 3, 2], filter_params={'remove': 3}, page_number=10, per_page=5),
             ([], get_pagination_data(2, 10, 1, 5, errors=True))
         )
+
+
+class TestQuerySetGallery(unittest.TestCase):
+    def setUp(self):
+        class UserGallery(QuerySetGallery):
+            filters = [QuerySetFilter(key='race', lookup='race')]
+
+        self.gallery = UserGallery()
+        self.users = get_users()
+
+    def test_get_page(self):
+        queryset, pagination_data = self.gallery.get_page(
+            queryset=self.users, page_number=1, per_page=3, filter_params={'race': 'Hobbit'}
+        )
+        self.assertEqual([q['id'] for q in queryset], [4, 1], msg=queryset)
+
+        queryset, pagination_data = self.gallery.get_page(
+            queryset=self.users, page_number=1, per_page=4, sort_params=['name'],
+        )
+        self.assertEqual([q['id'] for q in queryset], [4, 2, 3, 1], msg=queryset)
 
 
 if __name__ == '__main__':
