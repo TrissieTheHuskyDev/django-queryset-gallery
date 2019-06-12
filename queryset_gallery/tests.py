@@ -138,7 +138,7 @@ class TestQuerySetGallery(unittest.TestCase):
         self.assertEqual([q['id'] for q in queryset], [4, 1], msg=queryset)
 
         queryset, pagination_data = self.gallery.get_page(
-            queryset=self.users, page_number=1, per_page=4, sort_params=['name'],
+            queryset=self.users, page_number=1, per_page=4, order_by_lookups=['name'],
         )
         self.assertEqual([q['id'] for q in queryset], [4, 2, 3, 1], msg=queryset)
 

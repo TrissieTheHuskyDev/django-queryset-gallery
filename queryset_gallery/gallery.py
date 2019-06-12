@@ -57,11 +57,11 @@ class QuerySetGallery(Gallery):
 
     def get_page(
             self, page_number, per_page,
-            filter_params: dict = None, sort_params: list = None,
+            filter_params: dict = None, order_by_lookups: list = None,
             queryset=None
     ):
         objects = self._get_queryset() if not queryset else queryset
-        objects = self._order_by(objects, sort_params or list())
+        objects = self._order_by(objects, order_by_lookups or list())
 
         return super().get_page(
             page_number=page_number, per_page=per_page,
