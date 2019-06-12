@@ -35,23 +35,24 @@ class UserGallery(QuerySetGallery):
 The gallery has a method `get_page`. It gets several params like:
 
 ```
-def get_page(self, page_number, per_page, filter_params: dict=None, queryset=None):
+    def get_page(self, page_number, per_page, filter_params: dict = None, order_by_lookups: list = None, queryset=None):
 ```
 
-The first and second args are params for paginator. The third arg is a dict with params for filters. It includes filter keys and params. Also, you can provide source `queryset` or overdrive method `_get_queryset`, by default all model objects will be used as a source. Then you get the page the gallery return queryset and dict of pagination data.
+The first and second args are params for paginator. The third arg `filter_params` is a dict with params for filters. It includes filter keys and params. Also, you can provide source `queryset` or override method `_get_queryset`, by default all model objects will be used as a source.  The last arg `order_by_lookups` is a list of lookups for queryset method `order_by()`. All lookups from a list will be applied to queryset. Finally the gallery return queryset and dict of pagination data.
 
 ```
 gallery = UserGallery()
-params = {
+filter_params = {
     'email': 'admin',
     'is_staff': True,
 }
-gallery.get_page(per_page=10, page_number=1, filter_params=params)
+
+gallery.get_page(per_page=10, page_number=1, filter_params=params, order_by_lookups=['email'])
 ```
 
 ### How to work with pagination
 
-The `Paginator` class has two nuances. If you want to get all objects you can set `per_page` as -1. This way pagination returns all objects. If `per_page` and `necessary_page` are invalid it returns empty queryset and adds to pagination data dict key `errors`. You don't need to work with Paginator, because the `QuerySetGallery` class works with it. The gallery raise error 404 if there are invalid page data.
+You don't need to work with `Paginator`, because the `QuerySetGallery` class works with it. The `QuerySetGallery` has two nuances. If you want to get all objects you can set `per_page` as -1. This way pagination returns all objects. If `per_page` and `necessary_page` are invalid it raises error 404.
 
 Example of the pagination data:
 
