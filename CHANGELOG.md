@@ -1,3 +1,7 @@
+v1.0.2
+
+* Refactoring: rename QuerySetGallery 'get_page' param  from 'sort_params' to 'order_by_lookups'
+
 v1.0.1
 
 * #6 Implement ordering for queryset gallery
