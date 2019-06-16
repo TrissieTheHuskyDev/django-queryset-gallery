@@ -27,6 +27,10 @@ def get_users():
     )
     for p in params:
         users.add(MockModel(id=p[0], name=p[1], race=p[2]))
+
+    users.model = MockModel()
+    users.model._meta.get_field = lambda x: True
+
     return users
 
 

@@ -1,4 +1,4 @@
-from django.core.exceptions import FieldError
+from django.core.exceptions import FieldDoesNotExist
 from django.shortcuts import Http404
 
 from queryset_gallery.paginator import Paginator, QuerySetPaginator
@@ -46,11 +46,18 @@ class QuerySetGallery(Gallery):
         return self.model.objects.all()
 
     @staticmethod
-    def _order_by(objects, lookups: list):
-        try:
-            return objects.order_by(*lookups)
-        except FieldError:
-            return objects
+    def _is_lookups_valid(queryset, lookups):
+        for lk in lookups:
+            try:
+                queryset.model._meta.get_field(lk)
+            except FieldDoesNotExist:
+                return False
+        return True
+
+    def _order_by(self, queryset, lookups: list):
+        if self._is_lookups_valid(queryset, lookups):
+            return queryset.order_by(*lookups)
+        return queryset
 
     def _not_found(self):
         raise Http404
@@ -60,11 +67,11 @@ class QuerySetGallery(Gallery):
             filter_params: dict = None, order_by_lookups: list = None,
             queryset=None
     ):
-        objects = self._get_queryset() if not queryset else queryset
-        objects = self._order_by(objects, order_by_lookups or list())
+        queryset = self._get_queryset() if not queryset else queryset
+        queryset = self._order_by(queryset, order_by_lookups or list())
 
         return super().get_page(
             page_number=page_number, per_page=per_page,
             filter_params=filter_params,
-            objects=objects
+            objects=queryset
         )

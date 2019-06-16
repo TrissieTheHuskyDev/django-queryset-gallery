@@ -1,3 +1,7 @@
+v1.0.3
+
+* Fix: wrong error handling for queryset ordering
+
 v1.0.2
 
 * Refactoring: rename QuerySetGallery 'get_page' param  from 'sort_params' to 'order_by_lookups'
