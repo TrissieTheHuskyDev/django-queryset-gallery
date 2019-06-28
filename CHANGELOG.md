@@ -1,7 +1,7 @@
 v1.1.0
 
 * #8 Add simple search
-* Fix: Fix: division by zero error if there are emplty objects and per_page is -1
+* Fix: division by zero error if there are emplty objects and per_page is -1
 
 v1.0.3
 
