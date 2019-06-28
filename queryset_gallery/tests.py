@@ -1,9 +1,10 @@
 import unittest
 
-from queryset_gallery.filters import Filter, QuerySetFilter
+from django_mock_queries.query import MockModel, MockSet
+
+from queryset_gallery.filters import Filter, QuerySetFilter, QuerySetSimpleSearch
 from queryset_gallery.gallery import Gallery, QuerySetGallery
 from queryset_gallery.paginator import Paginator
-from django_mock_queries.query import MockSet, MockModel
 
 
 def get_pagination_data(objects_count, page_number, page_count, per_page, errors=False):
@@ -20,10 +21,10 @@ def get_pagination_data(objects_count, page_number, page_count, per_page, errors
 def get_users():
     users = MockSet()
     params = (
-        (2, 'Gandalf', 'Maia'),
-        (3, 'Gimli', 'Dwarf'),
-        (4, 'Frodo', 'Hobbit'),
-        (1, 'Smeagol', 'Hobbit')
+        (2, 'Gandalf Super Magic', 'Maia'),
+        (3, 'Gimli Puper Beard', 'Dwarf but maybe Hobbit'),
+        (4, 'Frodo Hobbit legs', 'Hobbit'),
+        (1, 'Smeagol Just Smeagol', 'Hobbit')
     )
     for p in params:
         users.add(MockModel(id=p[0], name=p[1], race=p[2]))
@@ -140,7 +141,12 @@ class TestGallery(unittest.TestCase):
 class TestQuerySetGallery(unittest.TestCase):
     def setUp(self):
         class UserGallery(QuerySetGallery):
-            filters = [QuerySetFilter(key='race', lookup='race')]
+            filters = [
+                QuerySetFilter(key='race', lookup='race'),
+                QuerySetSimpleSearch(key='query', lookups=[
+                    'race__icontains', 'name__icontains'
+                ])
+            ]
 
         self.gallery = UserGallery()
         self.users = get_users()
@@ -155,6 +161,24 @@ class TestQuerySetGallery(unittest.TestCase):
             queryset=self.users, page_number=1, per_page=4, order_by_lookups=['name'],
         )
         self.assertEqual([q['id'] for q in queryset], [4, 2, 3, 1], msg=queryset)
+
+        queryset, pagination_data = self.gallery.get_page(
+            queryset=self.users, page_number=1, per_page=4,
+            filter_params={'query': ['uper']},
+        )
+        self.assertEqual(sorted([q['id'] for q in queryset]), [2, 3], msg=queryset)
+
+        queryset, pagination_data = self.gallery.get_page(
+            queryset=self.users, page_number=1, per_page=4,
+            filter_params={'query': ['hobbit']},
+        )
+        self.assertEqual(sorted([q['id'] for q in queryset]), [1, 3, 4], msg=queryset)
+
+        queryset, pagination_data = self.gallery.get_page(
+            queryset=self.users, page_number=1, per_page=4,
+            filter_params={'query': ['hobbit', 'uper']},
+        )
+        self.assertEqual(sorted([q['id'] for q in queryset]), [1, 2, 3, 4], msg=queryset)
 
 
 if __name__ == '__main__':
