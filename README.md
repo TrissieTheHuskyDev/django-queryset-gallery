@@ -6,6 +6,7 @@ Queryset gallery is an interface for creating a gallery that provides pagination
 
 * [How to create filters](#how-to-create-filters)
 * [How to create a gallery](#how-to-create-a-gallery)
+* [How to use simple search](#how-to-use-simple-search)
 * [How to work with pagination](#how-to-work-with-pagination)
 
 ### How to create filters
@@ -15,8 +16,14 @@ Every filter inherits from base class `QuerySetFilter` and include two args: `ke
 ```
 from queryset_gallery.filters import QuerySetFilter
 
-UserEmail = QuerySetFilter(key='email', lookup='email__icontains')
-UserIsStaff = QuerySetFilter(key='is_staff', lookup='is_staff')
+UserEmail = QuerySetFilter(
+    key='email',
+    lookup='email__icontains'
+)
+UserIsStaff = QuerySetFilter(
+    key='is_staff',
+    lookup='is_staff'
+)
 ```
 
 ### How to create a gallery
@@ -35,7 +42,7 @@ class UserGallery(QuerySetGallery):
 The gallery has a method `get_page`. It gets several params like:
 
 ```
-    def get_page(self, page_number, per_page, filter_params: dict = None, order_by_lookups: list = None, queryset=None):
+def get_page(self, page_number, per_page, filter_params: dict = None, order_by_lookups: list = None, queryset=None):
 ```
 
 The first and second args are params for paginator. The third arg `filter_params` is a dict with params for filters. It includes filter keys and params. Also, you can provide source `queryset` or override method `_get_queryset`, by default all model objects will be used as a source.  The last arg `order_by_lookups` is a list of lookups for queryset method `order_by()`. All lookups from a list will be applied to queryset. Finally the gallery return queryset and dict of pagination data.
@@ -48,6 +55,26 @@ filter_params = {
 }
 
 gallery.get_page(per_page=10, page_number=1, filter_params=params, order_by_lookups=['email'])
+```
+
+### How to use simple search
+
+The simple search is a situation then there a list of params list `['Alex', 'Ambassador']` and several fields for filtering, for example, `first_name`, `last_name` and `nickname`. `QuerySetGallery` supports a simple search via `QuerySetSimpleSearch`. It's just a filter that can be added to const `filters`. For the example above `QuerySetSimpleSearch` create several Django Q objects with a condition OR and execute them. `QuerySetSimpleSearch` is created in the same way as `QuerySetFilter` but get a list of lookups instead of one lookup:
+
+```
+from django.contrib.auth.models import User
+
+users = User.objects.all()
+
+UserSimpleSearch = QuerySetSimpleSearch(
+    key='query',
+    lookups=[
+        'first_name__icontains',
+        'last_name__icontains',
+        'nickname__icontains'
+    ]
+)
+UserSimpleSearch.apply(users, ['Alex', 'Ambassador'])
 ```
 
 ### How to work with pagination
