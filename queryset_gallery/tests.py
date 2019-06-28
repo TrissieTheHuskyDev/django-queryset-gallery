@@ -85,15 +85,13 @@ class TestPaginator(unittest.TestCase):
                 msg=p
             )
 
-        paginator = Paginator(objects=[], per_page=1)
-        self.assertEqual(
-            paginator.get_page(page_number=1), ([], get_pagination_data(0, 1, 0, 1)),
-        )
+    def test_get_page_empty_list(self):
+        for per_page in (-1, 1):
+            paginator = Paginator(objects=[], per_page=per_page)
+            self.assertEqual(
+                paginator.get_page(page_number=1), ([], get_pagination_data(0, 1, 0, 1)),
+            )
 
-        paginator = Paginator(objects=[], per_page=-1)
-        self.assertEqual(
-            paginator.get_page(page_number=1), ([], get_pagination_data(0, 1, 0, 1)),
-        )
 
 
 class TestGallery(unittest.TestCase):
@@ -125,7 +123,7 @@ class TestGallery(unittest.TestCase):
             ), [1, 3, 3]
         )
 
-    def test_get_page(self):
+    def test_get_page_filter(self):
         self.assertEqual(
             self.gallery.get_page(
                 objects=[1, 3, 2], filter_params={'remove': 3}, page_number=1, per_page=5),
@@ -151,17 +149,19 @@ class TestQuerySetGallery(unittest.TestCase):
         self.gallery = UserGallery()
         self.users = get_users()
 
-    def test_get_page(self):
+    def test_get_page_filter(self):
         queryset, pagination_data = self.gallery.get_page(
             queryset=self.users, page_number=1, per_page=3, filter_params={'race': 'Hobbit'}
         )
         self.assertEqual([q['id'] for q in queryset], [4, 1], msg=queryset)
 
+    def test_get_page_order_by_lookups(self):
         queryset, pagination_data = self.gallery.get_page(
             queryset=self.users, page_number=1, per_page=4, order_by_lookups=['name'],
         )
         self.assertEqual([q['id'] for q in queryset], [4, 2, 3, 1], msg=queryset)
 
+    def test_get_page_simple_search(self):
         queryset, pagination_data = self.gallery.get_page(
             queryset=self.users, page_number=1, per_page=4,
             filter_params={'query': ['uper']},
