@@ -84,6 +84,16 @@ class TestPaginator(unittest.TestCase):
                 msg=p
             )
 
+        paginator = Paginator(objects=[], per_page=1)
+        self.assertEqual(
+            paginator.get_page(page_number=1), ([], get_pagination_data(0, 1, 0, 1)),
+        )
+
+        paginator = Paginator(objects=[], per_page=-1)
+        self.assertEqual(
+            paginator.get_page(page_number=1), ([], get_pagination_data(0, 1, 0, 1)),
+        )
+
 
 class TestGallery(unittest.TestCase):
 

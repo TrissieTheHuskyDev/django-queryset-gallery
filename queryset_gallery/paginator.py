@@ -22,10 +22,18 @@ class Paginator(object):
     """
     __slots__ = ('objects', 'objects_count', 'per_page', 'page_count')
 
+    def _get_per_page(self, per_page):
+        if per_page != -1:
+            return per_page
+        elif self.objects_count:
+            return self.objects_count
+        else:
+            return 1
+
     def __init__(self, objects, per_page=100):
         self.objects = objects
         self.objects_count = self._get_objects_length()
-        self.per_page = per_page if per_page != -1 else self.objects_count
+        self.per_page = self._get_per_page(per_page)
         self.page_count = ceil(self.objects_count / self.per_page)
 
     def _get_objects_length(self) -> int:
