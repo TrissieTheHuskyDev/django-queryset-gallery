@@ -42,7 +42,7 @@ class QuerySetGallery(Gallery):
     paginator = QuerySetPaginator
     model = None
 
-    def get_queryset(self):
+    def get_queryset(self, params=None):
         return self.model.objects.all()
 
     @staticmethod
