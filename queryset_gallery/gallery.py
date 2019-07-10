@@ -65,9 +65,9 @@ class QuerySetGallery(Gallery):
     def get_page(
             self, page_number, per_page,
             filter_params: dict = None, order_by_lookups: list = None,
-            queryset=None
+            queryset_params=None, queryset=None
     ):
-        queryset = self.get_queryset() if not queryset else queryset
+        queryset = self.get_queryset(queryset_params) if not queryset else queryset
         queryset = self._order_by(queryset, order_by_lookups or list())
 
         return super().get_page(
