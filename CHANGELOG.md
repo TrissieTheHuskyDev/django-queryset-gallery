@@ -1,6 +1,10 @@
+v1.1.1
+
+* #8 Get queryset with additional params
+
 v1.1.0
 
-* #8 Add simple search
+* #7 Add simple search
 * Fix: division by zero error if there are emplty objects and per_page is -1
 
 v1.0.3
