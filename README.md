@@ -42,10 +42,10 @@ class UserGallery(QuerySetGallery):
 The gallery has a method `get_page`. It gets several params like:
 
 ```
-def get_page(self, page_number, per_page, filter_params: dict = None, order_by_lookups: list = None, queryset=None):
+def get_page(self, page_number, per_page, filter_params: dict = None, order_by_lookups: list = None, queryset_params=None, queryset=None):
 ```
 
-The first and second args are params for paginator. The third arg `filter_params` is a dict with params for filters. It includes filter keys and params. Also, you can provide source `queryset` or override method `_get_queryset`, by default all model objects will be used as a source.  The last arg `order_by_lookups` is a list of lookups for queryset method `order_by()`. All lookups from a list will be applied to queryset. Finally the gallery return queryset and dict of pagination data.
+The first and second args are params for paginator. The third arg `filter_params` is a dict with params for filters. It includes filter keys and params. Also, you can provide source `queryset` or override method `get_queryset`, by default all model objects will be used as a source. Also, if there additional params for getting queryset you can provide it via `queryset_params`. The last arg `order_by_lookups` is a list of lookups for queryset method `order_by()`. All lookups from a list will be applied to queryset. Finally the gallery return queryset and dict of pagination data.
 
 ```
 gallery = UserGallery()
