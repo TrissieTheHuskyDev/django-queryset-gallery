@@ -42,7 +42,7 @@ class QuerySetGallery(Gallery):
     paginator = QuerySetPaginator
     model = None
 
-    def get_queryset(self, params: dict =None):
+    def get_queryset(self, params: dict = None):
         return self.model.objects.all()
 
     @staticmethod
@@ -67,7 +67,7 @@ class QuerySetGallery(Gallery):
             filter_params: dict = None, order_by_lookups: list = None,
             queryset_params: dict = None, queryset=None
     ):
-        queryset = self.get_queryset(queryset_params) if not queryset else queryset
+        queryset = self.get_queryset(params=queryset_params) if not queryset else queryset
         queryset = self._order_by(queryset, order_by_lookups or list())
 
         return super().get_page(
