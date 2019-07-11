@@ -1,3 +1,7 @@
+v1.1.2
+
+Fix: drop queryset order_by lookups if there aren't params for lookup
+
 v1.1.1
 
 * #8 Get queryset with additional params

@@ -47,6 +47,9 @@ class QuerySetGallery(Gallery):
 
     @staticmethod
     def _is_lookups_valid(queryset, lookups):
+        if not lookups:
+            return False
+
         for lk in lookups:
             try:
                 queryset.model._meta.get_field(lk)
