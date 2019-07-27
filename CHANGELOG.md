@@ -1,6 +1,10 @@
+v1.1.3
+
+* Fix: inverse sorting in QuerySetGallery
+
 v1.1.2
 
-Fix: drop queryset order_by lookups if there aren't params for lookup
+* Fix: drop queryset order_by lookups if there aren't params for lookup
 
 v1.1.1
 

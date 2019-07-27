@@ -52,6 +52,7 @@ class QuerySetGallery(Gallery):
 
         for lk in lookups:
             try:
+                lk = lk[1:] if lk.startswith('-') else lk
                 queryset.model._meta.get_field(lk)
             except FieldDoesNotExist:
                 return False
